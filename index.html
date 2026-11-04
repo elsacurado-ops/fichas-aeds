@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha de Consolidação de Gramática | 6.º ano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ameixa:#4a2c6f; --ameixa-2:#6d4a96; --menta:#1f9e8f; --menta-claro:#d9f2ee;
+    --creme:#fbf7f0; --papel:#ffffff; --tinta:#2b2233; --suave:#6f6578;
+    --ok:#2e8b57; --ok-fundo:#e3f4ea; --erro:#c0392b; --erro-fundo:#fbe6e3;
+    --parcial:#d68910; --parcial-fundo:#fdf1dc; --borda:#e4dcef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--creme);color:var(--tinta);font-family:'Nunito',sans-serif;font-size:17px;line-height:1.55}
+  header{position:sticky;top:0;z-index:10;background:var(--ameixa);color:#fff;padding:12px 20px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  header .linha{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.25rem;margin:0;font-weight:800;letter-spacing:.2px}
+  .marcador{font-weight:700;font-size:.95rem;background:rgba(255,255,255,.14);padding:4px 12px;border-radius:999px}
+  .barra{max-width:900px;margin:8px auto 0;height:8px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
+  .barra span{display:block;height:100%;width:0;background:var(--menta);transition:width .4s}
+  main{max-width:900px;margin:0 auto;padding:22px 16px 60px}
+  .card{background:var(--papel);border:1px solid var(--borda);border-radius:18px;padding:22px 24px;margin-bottom:22px;box-shadow:0 3px 0 var(--borda)}
+  .grupo-titulo{font-family:'Baloo 2',cursive;color:var(--ameixa);font-size:1.6rem;margin:34px 0 12px;display:flex;align-items:center;gap:10px}
+  .grupo-titulo .pastilha{background:var(--menta);color:#fff;font-size:1rem;padding:2px 12px;border-radius:999px}
+  .ex-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .ex-cab h3{margin:0;font-size:1.05rem;font-weight:800}
+  .ex-cab h3 .num{color:var(--menta)}
+  .pts{flex-shrink:0;font-size:.85rem;font-weight:700;color:var(--ameixa-2);background:#f1ebf8;padding:3px 10px;border-radius:999px;white-space:nowrap}
+  .texto-base{background:var(--menta-claro);border-left:5px solid var(--menta);padding:12px 16px;border-radius:10px;font-style:italic;margin:6px 0 14px}
+  .grelha{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  .item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid var(--borda);border-radius:12px;background:#fdfcfe}
+  .item .rot{font-weight:700}
+  select,input[type=text]{font-family:inherit;font-size:1rem;padding:6px 8px;border:2px solid var(--borda);border-radius:10px;background:#fff;color:var(--tinta);outline:none}
+  select:focus,input[type=text]:focus{border-color:var(--menta)}
+  input.palavra{width:140px}
+  .frase-linha{margin:8px 0;padding:8px 12px;border-radius:12px;border:1px solid transparent}
+  .frase-linha select,.frase-linha input{margin:0 3px}
+  .lacuna select{padding:3px 4px;font-weight:800}
+  .palavras-lacuna{display:flex;flex-wrap:wrap;gap:10px}
+  .palavras-lacuna .item{font-size:1.1rem;justify-content:center}
+  .mc-op{display:block;width:100%;text-align:left;font:inherit;padding:10px 14px;margin:8px 0;border:2px solid var(--borda);border-radius:12px;background:#fff;cursor:pointer;color:var(--tinta)}
+  .mc-op:hover:not(:disabled){border-color:var(--ameixa-2)}
+  .mc-op.escolhida{border-color:var(--ameixa);background:#f3edf9}
+  .mc-op .q{font-size:1.15rem;margin-right:6px}
+  .frase-tok{margin:10px 0;line-height:2.1}
+  .frase-tok .lab{font-weight:800;color:var(--menta);margin-right:6px}
+  .tok{cursor:pointer;padding:2px 1px;border-radius:6px;border-bottom:2px dashed transparent}
+  .tok:hover{background:#f1ebf8}
+  .tok.sel{background:#e7dcf5;border-bottom-color:var(--ameixa)}
+  .tok.f-ok{background:var(--ok-fundo);border-bottom:2px solid var(--ok)}
+  .tok.f-parcial{background:var(--parcial-fundo);border-bottom:2px solid var(--parcial)}
+  .tok.f-erro{background:var(--erro-fundo);border-bottom:2px solid var(--erro);text-decoration:line-through}
+  .tok.f-falta{border-bottom:2px dotted var(--erro);color:var(--erro);font-weight:800}
+  .painel{margin-top:12px;padding:12px;border:2px dashed var(--borda);border-radius:12px}
+  .painel .vazio{color:var(--suave);font-style:italic}
+  .painel .linha-p{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+  .painel .linha-p b{min-width:110px}
+  .dica{font-size:.92rem;color:var(--suave);margin:4px 0 10px}
+  .acoes{margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .btn{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;border:none;border-radius:12px;padding:10px 20px;cursor:pointer;background:var(--ameixa);color:#fff;box-shadow:0 3px 0 #2f1a49}
+  .btn:hover{background:var(--ameixa-2)}
+  .btn:disabled{background:#b9afc6;box-shadow:none;cursor:not-allowed}
+  .btn.menta{background:var(--menta);box-shadow:0 3px 0 #13685e}
+  .resultado{font-weight:800;padding:6px 14px;border-radius:999px}
+  .resultado.bom{background:var(--ok-fundo);color:var(--ok)}
+  .resultado.medio{background:var(--parcial-fundo);color:var(--parcial)}
+  .resultado.fraco{background:var(--erro-fundo);color:var(--erro)}
+  .f-ok-c{background:var(--ok-fundo)!important;border-color:var(--ok)!important}
+  .f-erro-c{background:var(--erro-fundo)!important;border-color:var(--erro)!important}
+  .correcao{font-size:.88rem;color:var(--erro);font-weight:700;margin-left:6px}
+  .aviso{color:var(--erro);font-weight:700;margin-top:8px}
+  .form-id{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:14px 0}
+  .form-id label{font-weight:700;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+  .form-id input{width:100%}
+  .fim-total{font-family:'Baloo 2',cursive;font-size:2.4rem;color:var(--ameixa);margin:4px 0}
+  .so-print{display:none}
+  .msg-tent{display:block;margin-top:8px;font-weight:700;color:var(--parcial)}
+  .tab-rel{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:.95rem}
+  .tab-rel th,.tab-rel td{border:1px solid var(--borda);padding:6px 10px;text-align:left}
+  .tab-rel th{background:#f1ebf8;color:var(--ameixa)}
+  .tab-rel td.n{text-align:center}
+  .tab-rel tr.tot td{font-weight:800;background:var(--menta-claro)}
+  .rel-id{display:flex;flex-wrap:wrap;gap:6px 24px;margin:6px 0}
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{background:#fff;font-size:12pt}
+    header,.btn,#estado-envio,#dica-pdf,#fim-msg,#inicio{display:none!important}
+    main{padding:0;max-width:none;display:flex;flex-direction:column}
+    #fim{order:-1}
+    .so-ecra{display:none}.so-print{display:inline}
+    .card{box-shadow:none;break-inside:avoid;border-color:#ccc}
+    #fim{break-after:page;border:none;padding:0}
+    .grupo-titulo{break-after:avoid}
+  }
+  @media (max-width:600px){.form-id{grid-template-columns:1fr 1fr}.form-id label:first-child{grid-column:1/3}.card{padding:18px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="linha">
+    <h1>Ficha de Consolidação de Gramática | 6.º ano</h1>
+    <span class="marcador" id="marcador">0 / 100 pontos · 0 / 18 exercícios</span>
+  </div>
+  <div class="barra"><span id="barra"></span></div>
+</header>
+
+<main>
+  <section class="card" id="inicio">
+    <h2 style="font-family:'Baloo 2',cursive;color:var(--ameixa);margin:0 0 6px">Olá! Antes de começares…</h2>
+    <p style="margin:0">Esta ficha revê a <b>acentuação</b>, a <b>ortografia</b>, os <b>nomes</b> e os <b>determinantes</b>. Em cada exercício, responde e carrega em “<b>Verificar</b>” e vês logo o que acertaste. Se errares, tens uma <b>segunda tentativa</b>, mas cada correção vale <b>metade</b> dos pontos. Nos exercícios com apenas duas hipóteses de resposta, só há <b>uma tentativa</b>.</p>
+    <div class="form-id">
+      <label>Nome<input type="text" id="nome" autocomplete="name"></label>
+      <label>N.º<input type="text" id="numero" inputmode="numeric"></label>
+      <label>Turma<select id="turma"><option value="">Escolhe…</option><option>6.º A</option><option>6.º F</option></select></label>
+    </div>
+    <button class="btn menta" id="comecar">Começar a ficha</button>
+    <div class="aviso" id="aviso-inicio" hidden>Preenche o nome, o número e a turma.</div>
+  </section>
+
+  <div id="ficha" hidden></div>
+
+  <section class="card" id="fim" hidden>
+    <h2 style="font-family:'Baloo 2',cursive;color:var(--ameixa);margin:0"><span class="so-ecra">Terminar a ficha</span><span class="so-print">Resultados | Ficha de Consolidação de Gramática | 6.º ano</span></h2>
+    <p class="fim-total" id="fim-total">0 / 100</p>
+    <p id="fim-msg" style="margin:0 0 10px">Verifica todos os exercícios para poderes enviar as respostas à professora.</p>
+    <div id="relatorio" hidden></div>
+    <div class="acoes">
+      <button class="btn menta" id="enviar" disabled>Enviar respostas à professora</button>
+      <button class="btn" id="imprimir" disabled>Imprimir / guardar em PDF</button>
+    </div>
+    <p id="estado-envio" style="font-weight:700;margin-bottom:0"></p>
+    <p class="dica" id="dica-pdf" hidden>Para guardar em PDF, escolhe <b>Guardar como PDF</b> no destino da impressora.</p>
+  </section>
+</main>
+
+<script>
+/* Só é preciso preencher se a página NÃO for servida pelo próprio Apps Script
+   (nesse caso a gravação faz-se com google.script.run e este endereço é ignorado). */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKYI07wO8lGf-_EjqHDAV3QFxoMlLpAyK11tK5v-6w7r5kteFKJQskLFuZ8KLPRw/exec';
+const FICHA = 'Consolidação de gramática 6.º ano (acentuação, ortografia, nomes, determinantes)';
+const FOLHA = 'Gramática 6.º ano';
+
+const SILABA = ['aguda','grave','esdrúxula'];
+const NOMES = ['nome próprio','nome comum','nome comum coletivo','verbo','adjetivo qualificativo'];
+const DETS = ['artigo definido','artigo indefinido','demonstrativo','possessivo','interrogativo','indefinido'];
+const S = (opts, a) => ({opts, a});            // lacuna de escolha
+const T = (...a) => ({txt:true, a});            // lacuna de escrita
+
+const GRUPOS = [
+ {titulo:'Grupo I', tema:'Acentuação', ex:[
+  {cod:'I.1', tipo:'select', pts:10, titulo:'Classifica cada palavra quanto à posição da sílaba tónica.',
+   dica:'Diz a palavra em voz alta e descobre a sílaba que se pronuncia com mais força.',
+   itens:[['caderno','grave'],['lâmpada','esdrúxula'],['café','aguda'],['árvore','esdrúxula'],['papel','aguda'],
+          ['rapaz','aguda'],['lápis','grave'],['sílaba','esdrúxula'],['janela','grave'],['ninguém','aguda']].map(([r,a])=>({rot:r,opts:SILABA,a}))},
+  {cod:'I.2', tipo:'texto', pts:10, titulo:'Escreve cada palavra corretamente, com acento gráfico quando for necessário.',
+   dica:'Atenção: há palavras que não levam acento. Nesse caso, escreve-as como estão.',
+   itens:[['pessego','pêssego'],['voce','você'],['facil','fácil'],['tambem','também'],['jovem','jovem'],
+          ['saude','saúde'],['util','útil'],['pe','pé'],['item','item'],['heroi','herói']].map(([r,a])=>({rot:r,a:[a]}))},
+  {cod:'I.3', tipo:'frases', pts:7, uma:true, titulo:'Escolhe a palavra correta para completar cada frase.',
+   itens:[
+    ['a) O meu ',S(['avô','avó'],'avô'),' chama-se Joaquim.'],
+    ['b) Portugal é um ',S(['país','pais'],'país'),' com uma longa costa.'],
+    ['c) Os meus ',S(['país','pais'],'pais'),' foram à reunião.'],
+    ['d) ',S(['Está','Esta'],'Esta'),' mochila ',S(['está','esta'],'está'),' muito pesada.'],
+    ['e) A Rita foi à ',S(['secretária','secretaria'],'secretaria'),' da escola tratar do cartão.'],
+    ['f) O Rui ',S(['é','e'],'e'),' a Ana são primos.']]},
+  {cod:'I.4', tipo:'mc', pts:3, titulo:'Assinala a frase em que o acento grave está corretamente usado.',
+   ops:['Vou à escola todos os dias.','Entreguei o livro à ele.','Começou à chover.','Fomos à pé até casa.'], a:0}
+ ]},
+ {titulo:'Grupo II', tema:'Ortografia', ex:[
+  {cod:'II.1', tipo:'lacunas', pts:5, titulo:'Completa as palavras com ç, s, ss, c ou sc.',
+   itens:[['cabe','ç','a'],['pa','ss','ear'],['cora','ç','ão'],['pre','s','ente'],['','c','ebola'],
+          ['pá','ss','aro'],['dan','ç','a'],['au','s','ência'],['na','sc','er'],['pi','sc','ina']].map(([x,a,y])=>[x,S(['ç','s','ss','c','sc'],a),y])},
+  {cod:'II.2', tipo:'lacunas', pts:4, uma:true, titulo:'Completa as palavras com g ou j.',
+   itens:[['','g','ente'],['lo','j','a'],['via','g','em'],['cere','j','a'],['','g','irafa'],['ma','j','estade'],['ti','g','ela'],['','j','eito']]
+          .map(([x,a,y])=>[x,S(['g','j'],a),y])},
+  {cod:'II.3', tipo:'lacunas', pts:4, uma:true, titulo:'Completa as palavras com x ou ch.',
+   itens:[['cai','x','a'],['','ch','uva'],['pei','x','e'],['fe','ch','ar'],['e','x','ame'],['bru','x','a'],['mo','ch','ila'],['ro','x','o']]
+          .map(([x,a,y])=>[x,S(['x','ch'],a),y])},
+  {cod:'II.4', tipo:'mc', pts:3, titulo:'Assinala a opção em que todas as palavras estão corretamente escritas.',
+   ops:['exceção, ótimo, direção','excessão, óptimo, direcção','exceção, ótimo, dirreção','eceção, ótimo, direção'], a:0},
+  {cod:'II.5', tipo:'tokens', modo:'corrigir', pts:10, titulo:'O texto tem cinco erros ortográficos. Clica em cada palavra errada e escreve-a corretamente.',
+   dica:'Se te enganares, clica outra vez na palavra para a desmarcar. Palavras certas marcadas descontam pontos.',
+   frases:[{lab:'', t:'Na semana passada, a minha turma [fes|fez] uma visita de estudo a Lisboa. Viajámos de comboio e vimos muitas [paisajens|paisagens] bonitas. Quando chegámos, [almossámos|almoçámos] num jardim. Depois, visitámos um museu, onde um senhor nos [esplicou|explicou] a história dos azulejos. A senhora da bilheteira foi muito [simpáctica|simpática]. Foi um dia excelente e ninguém se quis ir embora!'}]}
+ ]},
+ {titulo:'Grupo III', tema:'Nomes', ex:[
+  {cod:'III.1', tipo:'select', pts:6, titulo:'Lê o texto e classifica cada palavra que dele foi retirada.',
+   base:'A Marta passeou com o Bolinhas pelo parque de Leiria. Ao longe, viu um cardume de peixes no lago azul e um bando de pássaros barulhentos sobre as árvores.',
+   itens:[['Marta',0],['passeou',3],['Bolinhas',0],['parque',1],['Leiria',0],['viu',3],['cardume',2],['peixes',1],['azul',4],['bando',2],['barulhentos',4],['árvores',1]]
+          .map(([r,i])=>({rot:r,opts:NOMES,a:NOMES[i]}))},
+  {cod:'III.2', tipo:'select', pts:3, titulo:'Faz corresponder cada nome coletivo ao conjunto que designa.',
+   itens:[['alcateia','lobos'],['arquipélago','ilhas'],['enxame','abelhas'],['rebanho','ovelhas'],['constelação','estrelas'],['multidão','pessoas']]
+          .map(([r,a])=>({rot:r,opts:['ovelhas','estrelas','lobos','pessoas','ilhas','abelhas'],a}))},
+  {cod:'III.3', tipo:'texto', pts:5, titulo:'Escreve o plural dos nomes.',
+   itens:[['cão','cães'],['pão','pães'],['mão','mãos'],['lápis','lápis'],['cartaz','cartazes'],
+          ['papel','papéis'],['flor','flores'],['cidadão','cidadãos'],['animal','animais'],['jovem','jovens']].map(([r,a])=>({rot:r,a:[a]}))},
+  {cod:'III.4', tipo:'texto', pts:4, semArtigo:true, titulo:'Escreve o feminino dos nomes.',
+   itens:[['o ator','atriz'],['o galo','galinha'],['o cavalo','égua'],['o herói','heroína'],
+          ['o imperador','imperatriz'],['o padrinho','madrinha'],['o cão','cadela'],['o estudante','estudante']].map(([r,a])=>({rot:r,a:[a]}))},
+  {cod:'III.5', tipo:'mc', pts:3, titulo:'Na frase “O cardume nadava junto às rochas.”, a palavra “cardume” é um nome',
+   ops:['próprio.','comum coletivo.','comum, no plural.','próprio coletivo.'], a:1}
+ ]},
+ {titulo:'Grupo IV', tema:'Determinantes', ex:[
+  {cod:'IV.1', tipo:'tokens', modo:'classificar', opts:DETS, pts:11, titulo:'Clica em todos os determinantes das frases e classifica cada um.',
+   dica:'Lembra-te: o determinante vem antes do nome e concorda com ele. Se te enganares, clica outra vez para desmarcar.',
+   frases:[
+    {lab:'a)', t:'[Aquele|demonstrativo] rapaz emprestou [o|artigo definido] [seu|possessivo] livro a [uma|artigo indefinido] colega.'},
+    {lab:'b)', t:'[Que|interrogativo] filme queres ver hoje?'},
+    {lab:'c)', t:'[Certos|indefinido] alunos trouxeram [outros|indefinido] cadernos.'},
+    {lab:'d)', t:'[Os|artigo definido] [meus|possessivo] primos visitaram aldeias alentejanas.'},
+    {lab:'e)', t:'[Aquela|demonstrativo] professora marcou [outra|indefinido] visita.'}]},
+  {cod:'IV.2', tipo:'frases', pts:6, titulo:'Completa as frases com um determinante da subclasse indicada.',
+   itens:[
+    ['a) ',T('os'),' (artigo definido) gatos dormem ao sol.'],
+    ['b) Comprei ',T('uma'),' (artigo indefinido) bicicleta nova.'],
+    ['c) ',T('estes'),' (demonstrativo) livros, aqui na minha mão, são novos.'],
+    ['d) Emprestas-me a ',T('tua'),' (possessivo, 2.ª pessoa do singular) régua?'],
+    ['e) ',T('que'),' (interrogativo) desporto praticas?'],
+    ['f) ',T('certas','outras'),' (indefinido) pessoas preferem o inverno.']]},
+  {cod:'IV.3', tipo:'mc', pts:3, titulo:'Assinala a frase em que a palavra destacada é um determinante demonstrativo.',
+   ops:['<b><u>Aquele</u></b> caderno é do Tiago.','O Tiago quer <b><u>aquele</u></b>.','<b><u>O</u></b> caderno é do Tiago.','O Tiago esqueceu-se do <b><u>seu</u></b> caderno.'], a:0},
+  {cod:'IV.4', tipo:'mc', pts:3, titulo:'Na frase “Outros colegas ajudaram na festa.”, a palavra “Outros” é um determinante',
+   ops:['demonstrativo.','indefinido.','possessivo.','interrogativo.'], a:1}
+ ]}
+];
+
+const TODOS = GRUPOS.flatMap(g=>g.ex);
+const TOTAL = TODOS.reduce((s,e)=>s+e.pts,0);
+const norm = s => (s||'').normalize('NFC').trim().toLowerCase().replace(/\s+/g,' ');
+const meio = x => Math.round(x*2)/2;
+const fmt = x => String(x).replace('.',',');
+const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; };
+const LETRAS = ['A','B','C','D'];
+
+function selectDe(opts){
+  const s = el('select'); s.appendChild(new Option('…',''));
+  opts.forEach(o=>s.appendChild(new Option(o,o))); return s;
+}
+
+/* ---------- construção ---------- */
+function construir(){
+  const ficha = document.getElementById('ficha');
+  GRUPOS.forEach(g=>{
+    ficha.appendChild(el('h2','grupo-titulo',`<span class="pastilha">${g.titulo}</span>${g.tema}`));
+    g.ex.forEach(ex=>{
+      const c = el('section','card'); ex.card = c;
+      const cab = el('div','ex-cab');
+      cab.appendChild(el('h3',null,`<span class="num">${ex.cod}</span> ${ex.titulo}`));
+      cab.appendChild(el('span','pts',`${fmt(ex.pts)} pontos${ex.uma?' · 1 tentativa':''}`));
+      c.appendChild(cab);
+      if(ex.dica) c.appendChild(el('p','dica',ex.dica));
+      if(ex.base) c.appendChild(el('div','texto-base',ex.base));
+      const corpo = el('div'); c.appendChild(corpo);
+      ({select:fSelect, texto:fTexto, frases:fFrases, lacunas:fLacunas, mc:fMc, tokens:fTokens})[ex.tipo](ex, corpo);
+      const acoes = el('div','acoes');
+      const b = el('button','btn','Verificar'); b.onclick = ()=>verificar(ex);
+      ex.btn = b; ex.res = el('span');
+      acoes.append(b, ex.res); c.appendChild(acoes);
+      ficha.appendChild(c);
+    });
+  });
+}
+
+function fSelect(ex, corpo){
+  const g = el('div','grelha'); ex.ctrl=[];
+  ex.itens.forEach(it=>{
+    const d = el('div','item'); d.appendChild(el('span','rot',it.rot));
+    const s = selectDe(it.opts); d.appendChild(s); g.appendChild(d);
+    ex.ctrl.push({cx:d, inp:s, certo:[it.a], mostra:it.a});
+  });
+  corpo.appendChild(g);
+}
+function fTexto(ex, corpo){
+  const g = el('div','grelha'); ex.ctrl=[];
+  ex.itens.forEach(it=>{
+    const d = el('div','item'); d.appendChild(el('span','rot',it.rot));
+    const i = el('input','palavra'); i.type='text'; i.autocomplete='off'; i.spellcheck=false;
+    d.appendChild(i); g.appendChild(d);
+    ex.ctrl.push({cx:d, inp:i, certo:it.a, mostra:it.a[0]});
+  });
+  corpo.appendChild(g);
+}
+function partes(ex, linha, contentor){
+  linha.forEach(p=>{
+    if(typeof p==='string'){ contentor.appendChild(document.createTextNode(p)); return; }
+    let inp;
+    if(p.txt){ inp = el('input'); inp.type='text'; inp.autocomplete='off'; inp.spellcheck=false; inp.style.width='110px'; }
+    else inp = selectDe(p.opts);
+    contentor.appendChild(inp);
+    const certo = Array.isArray(p.a) ? p.a : [p.a];
+    ex.ctrl.push({cx:contentor, inp, certo, mostra:certo[0], emLinha:true});
+  });
+}
+function fFrases(ex, corpo){
+  ex.ctrl=[];
+  ex.itens.forEach(linha=>{ const d = el('div','frase-linha'); partes(ex, linha, d); corpo.appendChild(d); });
+}
+function fLacunas(ex, corpo){
+  ex.ctrl=[]; const w = el('div','palavras-lacuna');
+  ex.itens.forEach(linha=>{ const d = el('div','item lacuna'); partes(ex, linha, d); w.appendChild(d); });
+  corpo.appendChild(w);
+}
+function fMc(ex, corpo){
+  ex.escolha = null; ex.botoes = [];
+  ex.ops.forEach((o,i)=>{
+    const b = el('button','mc-op',`<span class="q">☐</span><b>${LETRAS[i]}.</b> ${o}`);
+    b.onclick = ()=>{ ex.escolha=i; ex.botoes.forEach((x,j)=>{x.classList.toggle('escolhida',j===i); x.querySelector('.q').textContent = j===i?'☒':'☐';}); };
+    ex.botoes.push(b); corpo.appendChild(b);
+  });
+}
+function fTokens(ex, corpo){
+  ex.toks = []; ex.estado = {};
+  ex.frases.forEach((f,fi)=>{
+    const d = el('div','frase-tok');
+    if(f.lab) d.appendChild(el('span','lab',f.lab));
+    f.t.match(/\[[^\]]*\]\S*|\S+/g).forEach((tok,ti)=>{
+      const m = tok.match(/^\[([^|\]]+)\|([^\]]+)\](.*)$/);
+      let palavra, resto, alvo=null;
+      if(m){ palavra=m[1]; alvo=m[2].split('/'); resto=m[3]; }
+      else { const mm = tok.match(/^(.*?)([.,!?;:]*)$/); palavra=mm[1]; resto=mm[2]; }
+      const chave = fi+'-'+ti;
+      const s = el('span','tok'); s.textContent = palavra;
+      const reg = {chave, palavra, alvo, span:s}; ex.toks.push(reg);
+      s.onclick = ()=>{
+        if(ex.feito || reg.bloq) return;
+        if(ex.estado[chave]) delete ex.estado[chave]; else ex.estado[chave]={val:''};
+        reg.fb = null; s.classList.remove('f-erro','f-parcial');
+        s.classList.toggle('sel', !!ex.estado[chave]); painel(ex);
+      };
+      d.appendChild(s); if(resto) d.appendChild(document.createTextNode(resto)); d.appendChild(document.createTextNode(' '));
+    });
+    corpo.appendChild(d);
+  });
+  ex.painel = el('div','painel'); corpo.appendChild(ex.painel); painel(ex);
+}
+function painel(ex){
+  const p = ex.painel; p.innerHTML='';
+  const sel = ex.toks.filter(t=>ex.estado[t.chave]);
+  if(!sel.length){ p.appendChild(el('span','vazio', ex.modo==='corrigir' ? 'Ainda não marcaste nenhuma palavra.' : 'Ainda não marcaste nenhum determinante.')); return; }
+  sel.forEach(t=>{
+    const l = el('div','linha-p'); l.appendChild(el('b',null,t.palavra + ' →'));
+    let inp;
+    if(ex.modo==='corrigir'){ inp = el('input'); inp.type='text'; inp.autocomplete='off'; inp.spellcheck=false; inp.placeholder='escreve corretamente'; }
+    else inp = selectDe(ex.opts);
+    inp.value = ex.estado[t.chave].val;
+    inp.oninput = inp.onchange = ()=>{ ex.estado[t.chave].val = inp.value; };
+    if(t.bloq || ex.feito) inp.disabled = true;
+    t.inp = inp; t.linha = l; l.appendChild(inp); p.appendChild(l);
+    if(t.fb==='ok') l.classList.add('f-ok-c');
+    else if(t.fb==='mal'){ inp.classList.add('f-erro-c'); if(ex.feito) l.appendChild(el('span','correcao','✗ ' + t.alvo[0])); }
+    else if(t.fb==='extra'){ l.classList.add('f-erro-c'); l.appendChild(el('span','correcao', ex.modo==='corrigir' ? '✗ esta palavra estava certa' : '✗ não é determinante')); }
+  });
+  if(ex.feito){
+    const faltas = ex.toks.filter(t=>t.alvo && !ex.estado[t.chave]);
+    if(faltas.length) p.appendChild(el('div','correcao','Faltou assinalar: ' + faltas.map(t=>`${t.palavra} (${t.alvo[0]})`).join(', ')));
+  }
+}
+
+/* ---------- correção ---------- */
+function corrigirMc(ex, final){
+  const certo = ex.escolha===ex.a;
+  const escolhido = ex.botoes[ex.escolha];
+  if(certo){ escolhido.classList.add('f-ok-c'); ex.botoes.forEach(b=>b.disabled=true); return ex.pts; }
+  escolhido.classList.remove('escolhida'); escolhido.classList.add('f-erro-c'); escolhido.disabled = true;
+  escolhido.querySelector('.q').textContent = '☐';
+  if(final){ ex.botoes[ex.a].classList.add('f-ok-c'); ex.botoes.forEach(b=>b.disabled=true); }
+  ex.escolha = null;
+  return 0;
+}
+function corrigirItens(ex, final){
+  const val = ex.pts/ex.ctrl.length; let s = 0;
+  ex.ctrl.forEach(c=>{
+    if(c.ok){ s += val; return; }
+    c.inp.classList.remove('f-erro-c'); if(!c.emLinha) c.cx.classList.remove('f-erro-c');
+    let v = norm(c.inp.value); if(ex.semArtigo) v = v.replace(/^a /,'');
+    if(c.certo.some(a=>norm(a)===v)){
+      c.ok = true; s += val; c.inp.disabled = true;
+      c.inp.classList.add('f-ok-c'); if(!c.emLinha) c.cx.classList.add('f-ok-c');
+    } else {
+      c.inp.classList.add('f-erro-c'); if(!c.emLinha) c.cx.classList.add('f-erro-c');
+      if(final){ c.inp.disabled = true; c.inp.insertAdjacentElement('afterend', el('span','correcao','✗ ' + c.mostra)); }
+    }
+  });
+  return s;
+}
+function corrigirTokens(ex, final){
+  const alvos = ex.toks.filter(t=>t.alvo), m = ex.pts/alvos.length/2;
+  let s = 0; const conta = {falta:0, mal:0, extra:0};
+  ex.toks.forEach(t=>{
+    t.span.classList.remove('sel','f-ok','f-parcial','f-erro','f-falta'); t.fb = null;
+    const st = ex.estado[t.chave];
+    if(t.alvo){
+      if(!st){ conta.falta++; if(final){ t.span.classList.add('f-falta'); t.span.title = 'Faltou: ' + t.alvo[0]; } return; }
+      s += m;
+      if(t.alvo.some(a=>norm(a)===norm(st.val))){ s += m; t.fb='ok'; t.bloq = true; t.span.classList.add('f-ok'); }
+      else { conta.mal++; t.fb='mal'; t.span.classList.add('f-parcial'); }
+    } else if(st){ s -= m; conta.extra++; t.fb='extra'; t.span.classList.add('f-erro'); }
+  });
+  if(final) ex.feito = true;
+  painel(ex);
+  ex.conta = conta;
+  return s;
+}
+
+function verificar(ex){
+  if(ex.tipo==='mc' && ex.escolha===null){ ex.res.className='aviso'; ex.res.textContent='Escolhe uma opção.'; return; }
+  ex.tent = (ex.tent||0) + 1;
+  const final = ex.uma || ex.tent===2;
+  let s = ex.tipo==='mc' ? corrigirMc(ex, final) : ex.tipo==='tokens' ? corrigirTokens(ex, final) : corrigirItens(ex, final);
+  s = Math.max(0, Math.min(ex.pts, meio(s)));
+
+  if(ex.tent===1 && !final && s < ex.pts){
+    ex.s1 = s;
+    ex.btn.textContent = 'Verificar outra vez';
+    ex.res.className = 'resultado medio';
+    let msg = `1.ª tentativa: ${fmt(s)} / ${fmt(ex.pts)} pontos.`;
+    let ajuda = 'Corrige o que está assinalado a vermelho. Cada correção vale metade dos pontos.';
+    if(ex.tipo==='mc') ajuda = 'Escolhe outra opção. Se acertares, ganhas metade dos pontos.';
+    if(ex.tipo==='tokens'){
+      const c = ex.conta, partes = [];
+      if(c.falta) partes.push(`faltam encontrar ${c.falta}`);
+      if(c.mal) partes.push(`${c.mal} ${ex.modo==='corrigir'?'mal corrigida(s)':'mal classificado(s)'} (a laranja)`);
+      if(c.extra) partes.push(`${c.extra} marcada(s) por engano (a vermelho: clica para desmarcar)`);
+      ajuda = 'Atenção: ' + partes.join('; ') + '. Cada correção vale metade dos pontos.';
+    }
+    ex.res.innerHTML = `${msg}<span class="msg-tent">${ajuda}</span>`;
+    return;
+  }
+  const finalPts = ex.tent===2 ? meio(ex.s1 + Math.max(0, s - ex.s1)/2) : s;
+  terminar(ex, finalPts);
+}
+
+function terminar(ex, pontos){
+  ex.feito = true; ex.pontos = pontos; ex.btn.hidden = true;
+  if(ex.tipo==='tokens') painel(ex);
+  const r = pontos/ex.pts;
+  ex.res.className = 'resultado ' + (r>=.8?'bom':r>=.5?'medio':'fraco');
+  ex.res.textContent = `${r===1?'Excelente! ':r>=.5?'Bom trabalho! ':'Revê este conteúdo. '}${fmt(pontos)} / ${fmt(ex.pts)} pontos` + (ex.tent===2 ? ' (2 tentativas)' : '');
+  atualizar();
+}
+function atualizar(){
+  const feitos = TODOS.filter(e=>e.feito), soma = meio(feitos.reduce((s,e)=>s+e.pontos,0));
+  document.getElementById('marcador').textContent = `${fmt(soma)} / ${TOTAL} pontos · ${feitos.length} / ${TODOS.length} exercícios`;
+  document.getElementById('barra').style.width = (feitos.length/TODOS.length*100)+'%';
+  document.getElementById('fim-total').textContent = `${fmt(soma)} / ${TOTAL}`;
+  const tudo = feitos.length===TODOS.length;
+  if(tudo){ relatorio(soma); document.getElementById('imprimir').disabled = false; document.getElementById('dica-pdf').hidden = false; }
+  if(tudo && !enviado){
+    document.getElementById('enviar').disabled = false;
+    document.getElementById('fim-msg').textContent = 'Terminaste todos os exercícios. Envia agora as tuas respostas à professora.';
+  } else if(!tudo){
+    document.getElementById('fim-msg').textContent = `Faltam ${TODOS.length-feitos.length} exercício(s) por verificar.`;
+  }
+}
+
+/* ---------- relatório para imprimir ---------- */
+function relatorio(soma){
+  const v = id => document.getElementById(id).value.trim().replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const hoje = new Date().toLocaleDateString('pt-PT');
+  let linhas = '';
+  GRUPOS.forEach(g=>g.ex.forEach(e=>{
+    linhas += `<tr><td>${e.cod}</td><td>${g.tema}</td><td class="n">${e.tent||1}</td><td class="n">${fmt(e.pontos)}</td><td class="n">${fmt(e.pts)}</td></tr>`;
+  }));
+  const r = document.getElementById('relatorio');
+  r.innerHTML = `<div class="rel-id"><span><b>Nome:</b> ${v('nome')}</span><span><b>N.º:</b> ${v('numero')}</span><span><b>Turma:</b> ${v('turma')}</span><span><b>Data:</b> ${hoje}</span></div>
+    <table class="tab-rel"><thead><tr><th>Exercício</th><th>Conteúdo</th><th>Tentativas</th><th>Pontos obtidos</th><th>Cotação</th></tr></thead>
+    <tbody>${linhas}<tr class="tot"><td colspan="3">Total</td><td class="n">${fmt(soma)}</td><td class="n">${TOTAL}</td></tr></tbody></table>`;
+  r.hidden = false;
+}
+document.getElementById('imprimir').onclick = ()=>{ try { window.print(); } catch(e) {} };
+
+/* ---------- envio ---------- */
+let enviado = false;
+function enviar(){
+  const b = document.getElementById('enviar'), est = document.getElementById('estado-envio');
+  b.disabled = true; est.textContent = 'A enviar…'; est.style.color = 'var(--suave)';
+  const soma = meio(TODOS.reduce((s,e)=>s+(e.pontos||0),0));
+  const dados = {
+    folha: FOLHA, ficha: FICHA,
+    nome: document.getElementById('nome').value.trim(),
+    numero: document.getElementById('numero').value.trim(),
+    turma: document.getElementById('turma').value.trim(),
+    pontuacao: String(soma).replace('.',','),
+    colunas: JSON.stringify(TODOS.map(e=>[`${e.cod} (${e.pts})`, e.pontos]))
+  };
+  const ok = ()=>{ enviado = true; est.style.color='var(--ok)'; est.textContent = '✓ Respostas enviadas! Já podes fechar esta página.'; };
+  const falha = ()=>{ b.disabled = false; est.style.color='var(--erro)'; est.textContent = 'Não foi possível enviar. Verifica a ligação à internet e tenta outra vez.'; };
+  if(window.google && google.script && google.script.run){
+    google.script.run.withSuccessHandler(ok).withFailureHandler(falha).guardarResultado(dados);
+  } else if(SCRIPT_URL){
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(dados).toString()})
+      .then(ok).catch(falha);
+  } else falha();
+}
+
+document.getElementById('comecar').onclick = ()=>{
+  const v = ['nome','numero','turma'].every(id=>document.getElementById(id).value.trim());
+  if(!v){ document.getElementById('aviso-inicio').hidden = false; return; }
+  ['nome','numero','turma'].forEach(id=>document.getElementById(id).disabled = true);
+  document.getElementById('comecar').hidden = true; document.getElementById('aviso-inicio').hidden = true;
+  document.getElementById('ficha').hidden = false; document.getElementById('fim').hidden = false;
+  atualizar();
+};
+document.getElementById('enviar').onclick = enviar;
+construir();
+</script>
+</body>
+</html>
