@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telling the Time | English 6th Grade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!--
+  CONFIGURAÇÃO
+  Colar em APPS_SCRIPT_URL o URL da implementação (Web App) do Apps Script.
+  Parâmetros enviados (e.parameter): ficha, nome, numero, turma,
+  ex1, ex2, ex3, ex4, ex5, ex6, total, data
+-->
+<style>
+  :root{
+    --night:#1d2b53;      /* azul meia-noite */
+    --night-2:#2c3e78;
+    --saffron:#f4a259;    /* açafrão */
+    --saffron-soft:#fde8d2;
+    --mint:#5bb59a;
+    --mint-soft:#dcf2ea;
+    --coral:#e05d5d;
+    --coral-soft:#fbe1e1;
+    --paper:#fbf8f3;
+    --ink:#1f2433;
+    --muted:#6b7086;
+    --line:#e6e1d8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;font-size:17px;line-height:1.5}
+  header{background:linear-gradient(135deg,var(--night),var(--night-2));color:#fff;padding:34px 20px 70px;text-align:center;position:relative;overflow:hidden}
+  header h1{font-family:'Fredoka',sans-serif;font-size:2.4rem;margin:0 0 6px;letter-spacing:.5px}
+  header p{margin:0;opacity:.85;font-weight:600}
+  header .tag{display:inline-block;background:var(--saffron);color:var(--night);font-weight:800;border-radius:999px;padding:5px 16px 5px 8px;margin-bottom:12px;font-size:.95rem;display:inline-flex;align-items:center;gap:8px}
+  header .tag .flag{border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+  main{max-width:880px;margin:-46px auto 60px;padding:0 16px;position:relative}
+  .card{background:#fff;border-radius:18px;box-shadow:0 6px 22px rgba(29,43,83,.08);padding:24px 26px;margin-bottom:22px;border:1px solid var(--line)}
+  .id-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px}
+  @media(max-width:640px){.id-grid{grid-template-columns:1fr}}
+  label.f{display:block;font-weight:800;font-size:.85rem;color:var(--night);margin-bottom:4px}
+  input[type=text],input[type=number],select{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--saffron)}
+  h2{font-family:'Fredoka',sans-serif;color:var(--night);margin:0 0 4px;font-size:1.45rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  h2 .num{background:var(--night);color:#fff;border-radius:10px;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  h2 .pts{margin-left:auto;font-family:'Nunito';font-size:.85rem;font-weight:800;background:var(--saffron-soft);color:#9a5418;padding:3px 10px;border-radius:999px}
+  .instr{color:var(--muted);margin:2px 0 18px;font-weight:600}
+  .remember{background:var(--saffron-soft);border-left:6px solid var(--saffron)}
+  .remember-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .remember ul{margin:6px 0 0;padding-left:20px}
+  .remember li{margin-bottom:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  .item{border:2px solid var(--line);border-radius:14px;padding:14px;background:#fff;transition:.2s}
+  .item.ok{border-color:var(--mint);background:var(--mint-soft)}
+  .item.ko{border-color:var(--coral);background:var(--coral-soft)}
+  .item .q{font-weight:800;margin-bottom:8px;color:var(--night)}
+  .clockbox{display:flex;justify-content:center;margin:4px 0 10px}
+  .digital{font-family:'Fredoka';font-size:2rem;text-align:center;background:var(--night);color:var(--saffron);border-radius:12px;padding:6px 0;margin:4px auto 12px;width:150px;letter-spacing:2px}
+  .opt{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;user-select:none}
+  .opt:hover{background:#f4f1ea}
+  .opt .box{font-size:1.15rem;line-height:1.2;min-width:1.2em}
+  .opt.sel{background:var(--saffron-soft);font-weight:700}
+  .locked .opt{cursor:default}
+  .locked .opt:hover{background:transparent}
+  .opt.right{outline:2px solid var(--mint)}
+  .fb{margin-top:8px;font-weight:700;font-size:.92rem}
+  .fb.ok{color:#2c7a62}.fb.ko{color:#b13a3a}
+  .write-row{display:flex;align-items:center;gap:6px;font-weight:700}
+  .write-row input{flex:1}
+  .setter{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .setter .grp{display:flex;align-items:center;gap:4px;background:#f4f1ea;border-radius:10px;padding:4px 6px;font-weight:800;font-size:.85rem;color:var(--night)}
+  .setter button{border:none;background:var(--night);color:#fff;border-radius:8px;width:32px;height:32px;font-size:1rem;cursor:pointer;font-weight:800}
+  .setter button:disabled{opacity:.35;cursor:default}
+  .target{font-family:'Fredoka';font-size:1.25rem;text-align:center;color:var(--night);margin-bottom:4px}
+  .text{background:#f7f4ee;border-radius:14px;padding:18px 20px;margin-bottom:18px;border:1px dashed #d9cfbf}
+  .text h3{font-family:'Fredoka';margin:0 0 8px;color:var(--night)}
+  .text p{margin:0 0 8px}
+  .gapline{padding:10px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+  .gapline:last-child{border-bottom:none}
+  .gapline select{width:auto;min-width:130px;padding:6px 10px}
+  .gapline.ok select{border-color:var(--mint);background:var(--mint-soft)}
+  .gapline.ko select{border-color:var(--coral);background:var(--coral-soft)}
+  .bank{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .bank span{background:var(--night);color:#fff;border-radius:999px;padding:4px 14px;font-weight:700}
+  .actions{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+  .btn{border:none;background:var(--saffron);color:var(--night);font:inherit;font-weight:800;padding:11px 22px;border-radius:12px;cursor:pointer;box-shadow:0 3px 0 #c97f3c}
+  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 #c97f3c}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .btn.dark{background:var(--night);color:#fff;box-shadow:0 3px 0 #0f1834}
+  .score{font-weight:800;color:var(--night)}
+  .msg{font-weight:700;color:var(--coral)}
+  .final{text-align:center}
+  .final .big{font-family:'Fredoka';font-size:3rem;color:var(--night)}
+  .final table{margin:10px auto 16px;border-collapse:collapse}
+  .final td{padding:4px 14px;border-bottom:1px solid var(--line)}
+  .final td:last-child{text-align:right;font-weight:800}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding-bottom:30px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag"><svg class="flag" viewBox="0 0 60 30" width="28" height="14" aria-label="UK flag"><clipPath id="ukS"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="ukT"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#ukS)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ukT)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg> English</div>
+  <h1>⏰ Telling the Time</h1>
+  <p>What time is it? Learn, practise and check your answers!</p>
+</header>
+
+<main>
+
+  <!-- IDENTIFICAÇÃO -->
+  <section class="card">
+    <div class="id-grid">
+      <div><label class="f" for="nome">Name</label><input type="text" id="nome" autocomplete="off"></div>
+      <div><label class="f" for="numero">Number</label><input type="number" id="numero" min="1" max="35"></div>
+      <div><label class="f" for="turma">Class</label>
+        <select id="turma">
+          <option value="">Choose...</option>
+          <option>6.º B</option><option>6.º F</option><option>6.º H</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- REMEMBER -->
+  <section class="card remember">
+    <div class="remember-wrap">
+      <div id="ruleClock"></div>
+      <div style="flex:1;min-width:250px">
+        <h2 style="margin-bottom:6px">💡 Remember!</h2>
+        <ul>
+          <li><b>:00</b> → <i>o'clock</i> &nbsp;(7:00 = seven o'clock)</li>
+          <li><b>:15</b> → <i>quarter past</i> &nbsp;(7:15 = quarter past seven)</li>
+          <li><b>:30</b> → <i>half past</i> &nbsp;(7:30 = half past seven)</li>
+          <li><b>:45</b> → <i>quarter to</i> + next hour &nbsp;(7:45 = quarter to eight)</li>
+          <li>Minutes <b>1 to 30</b> → <b>PAST</b> the hour</li>
+          <li>Minutes <b>31 to 59</b> → <b>TO</b> the next hour</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- EX 1 -->
+  <section class="card" id="ex1">
+    <h2><span class="num">1</span> Look at the clocks <span class="pts">20 points</span></h2>
+    <p class="instr">What time is it? Choose the correct option.</p>
+    <div class="grid" id="ex1-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e1')">Check answers</button><span class="score" id="e1-score"></span><span class="msg" id="e1-msg"></span></div>
+  </section>
+
+  <!-- EX 2 -->
+  <section class="card" id="ex2">
+    <h2><span class="num">2</span> Digital clocks <span class="pts">15 points</span></h2>
+    <p class="instr">Read the digital clock. Choose the correct time in words.</p>
+    <div class="grid" id="ex2-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e2')">Check answers</button><span class="score" id="e2-score"></span><span class="msg" id="e2-msg"></span></div>
+  </section>
+
+  <!-- EX 3 -->
+  <section class="card" id="ex3">
+    <h2><span class="num">3</span> Write the time <span class="pts">20 points</span></h2>
+    <p class="instr">Write the time in words. Use <i>o'clock</i>, <i>past</i> or <i>to</i>.</p>
+    <div class="grid" id="ex3-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e3')">Check answers</button><span class="score" id="e3-score"></span><span class="msg" id="e3-msg"></span></div>
+  </section>
+
+  <!-- EX 4 -->
+  <section class="card" id="ex4">
+    <h2><span class="num">4</span> Set the clock <span class="pts">20 points</span></h2>
+    <p class="instr">Use the buttons to move the hands. Show the time on the clock.</p>
+    <div class="grid" id="ex4-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e4')">Check answers</button><span class="score" id="e4-score"></span><span class="msg" id="e4-msg"></span></div>
+  </section>
+
+  <!-- EX 5 -->
+  <section class="card" id="ex5">
+    <h2><span class="num">5</span> Read about Sofia's day <span class="pts">15 points</span></h2>
+    <p class="instr">Read the text. Then choose the correct time.</p>
+    <div class="text">
+      <h3>A day in my life</h3>
+      <p>Hi! My name is Sofia. I'm eleven years old and I live in Leiria.</p>
+      <p>On school days, I get up at <b>quarter past seven</b>. I have breakfast at half past seven and I go to school by bus. My classes start at <b>half past eight</b>.</p>
+      <p>I have lunch at the school canteen at <b>quarter to one</b>. In the afternoon, I have English and PE. I go home at <b>ten past five</b>.</p>
+      <p>I do my homework and then I have dinner with my family at eight o'clock. I go to bed at <b>half past nine</b>. Good night!</p>
+    </div>
+    <div class="grid" id="ex5-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e5')">Check answers</button><span class="score" id="e5-score"></span><span class="msg" id="e5-msg"></span></div>
+  </section>
+
+  <!-- EX 6 -->
+  <section class="card" id="ex6">
+    <h2><span class="num">6</span> Complete the sentences <span class="pts">10 points</span></h2>
+    <p class="instr">Choose the correct word from the box.</p>
+    <div class="bank"><span>o'clock</span><span>half</span><span>quarter</span><span>past</span><span>to</span></div>
+    <div id="ex6-items"></div>
+    <div class="actions"><button class="btn" onclick="check('e6')">Check answers</button><span class="score" id="e6-score"></span><span class="msg" id="e6-msg"></span></div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="card final" id="final">
+    <h2 style="justify-content:center">🏁 Your score</h2>
+    <div class="big"><span id="total">0</span>/100</div>
+    <table id="summary"></table>
+    <button class="btn dark" id="sendBtn" onclick="submitAll()">Send to my teacher</button>
+    <p class="msg" id="sendMsg"></p>
+  </section>
+
+</main>
+<footer>English · 6th Grade · Telling the Time</footer>
+
+<script>
+// Configure this with the deployed Google Apps Script Web App URL before sharing the worksheet.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLsZ_CD9rhO2yavJLn8sd3SesCdKXE_7bcZM3jCFqk7PEtdS9BJPjb7BedCDrzJozK/exec'; // <<< colar aqui o URL do Apps Script
+const FICHA = 'Telling the Time (6.º ano)';
+const L = ['A','B','C','D'];
+
+/* ---------- CLOCK SVG ---------- */
+function clockSVG(h, m, size, rule){
+  size = size || 150;
+  const c = 100, r = 88;
+  let s = `<svg width="${size}" height="${size}" viewBox="0 0 200 200" aria-hidden="true">`;
+  if(rule){
+    s += `<path d="M100 100 L100 12 A88 88 0 0 1 100 188 Z" fill="#dcf2ea"/>`;
+    s += `<path d="M100 100 L100 188 A88 88 0 0 1 100 12 Z" fill="#fbe1e1"/>`;
+  }
+  s += `<circle cx="${c}" cy="${c}" r="${r}" fill="${rule?'none':'#fff'}" stroke="#1d2b53" stroke-width="7"/>`;
+  for(let i=0;i<60;i++){
+    const a = i*6*Math.PI/180, big = i%5===0;
+    const r1 = big ? r-14 : r-8, r2 = r-4;
+    s += `<line x1="${c+r1*Math.sin(a)}" y1="${c-r1*Math.cos(a)}" x2="${c+r2*Math.sin(a)}" y2="${c-r2*Math.cos(a)}" stroke="#1d2b53" stroke-width="${big?3:1}" stroke-linecap="round"/>`;
+  }
+  for(let n=1;n<=12;n++){
+    const a = n*30*Math.PI/180, rr = r-27;
+    s += `<text x="${c+rr*Math.sin(a)}" y="${c-rr*Math.cos(a)+6}" text-anchor="middle" font-family="Fredoka" font-size="17" font-weight="600" fill="#1d2b53">${n}</text>`;
+  }
+  if(rule){
+    s += `<text x="145" y="108" text-anchor="middle" font-family="Fredoka" font-size="20" font-weight="700" fill="#2c7a62">PAST</text>`;
+    s += `<text x="58" y="108" text-anchor="middle" font-family="Fredoka" font-size="20" font-weight="700" fill="#b13a3a">TO</text>`;
+  } else {
+    const ha = ((h%12) + m/60) * 30 * Math.PI/180, ma = m*6*Math.PI/180;
+    s += `<line x1="${c}" y1="${c}" x2="${c+45*Math.sin(ha)}" y2="${c-45*Math.cos(ha)}" stroke="#1d2b53" stroke-width="8" stroke-linecap="round"/>`;
+    s += `<line x1="${c}" y1="${c}" x2="${c+68*Math.sin(ma)}" y2="${c-68*Math.cos(ma)}" stroke="#f4a259" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  s += `<circle cx="${c}" cy="${c}" r="6" fill="#1d2b53"/></svg>`;
+  return s;
+}
+document.getElementById('ruleClock').innerHTML = clockSVG(0,0,170,true);
+
+/* ---------- DATA ---------- */
+const DATA = {
+  e1:{pts:4, items:[
+    {h:2,m:30, o:['half past two','half past six',"two o'clock",'thirty to two'], c:0},
+    {h:8,m:15, o:['quarter to eight','quarter past eight','eight past three','fifteen to eight'], c:1},
+    {h:5,m:45, o:['quarter past five','quarter to five','quarter to six','half past five'], c:2},
+    {h:10,m:10,o:['ten to ten','two past ten','ten past two','ten past ten'], c:3},
+    {h:1,m:35, o:['twenty-five past one','twenty-five to two','thirty-five to one','seven past one'], c:1}
+  ]},
+  e2:{pts:3, items:[
+    {d:'04:50', o:['ten to four','ten past five','ten to five','fifteen past four'], c:2},
+    {d:'12:05', o:['five past twelve','five to twelve','twelve past five','five to one'], c:0},
+    {d:'07:40', o:['twenty past seven','twenty to seven','forty to eight','twenty to eight'], c:3},
+    {d:'09:25', o:['twenty-five to nine','twenty-five past nine','twenty-five to ten','nine past twenty-five'], c:1},
+    {d:'03:55', o:['five past three','five to three','five to four','fifty-five past three'], c:2}
+  ]},
+  e3:{pts:4, items:[
+    {h:3,m:0,  a:["three o'clock", "three o clock"]},
+    {h:6,m:30, a:['half past six']},
+    {h:9,m:15, a:['quarter past nine']},
+    {h:11,m:45,a:['quarter to twelve']},
+    {h:4,m:20, a:['twenty past four', 'twenty minutes past four']}
+  ]},
+  e4:{pts:5, items:[
+    {t:'half past four', h:4, m:30},
+    {t:'quarter to nine', h:8, m:45},
+    {t:'twenty past eleven', h:11, m:20},
+    {t:'five to one', h:12, m:55}
+  ]},
+  e5:{pts:3, items:[
+    {q:'What time does Sofia get up?',      o:['6:15','7:15','7:45','7:30'], c:1},
+    {q:'What time do her classes start?',   o:['8:30','8:15','7:30','9:30'], c:0},
+    {q:'What time does she have lunch?',    o:['1:15','12:15','12:45','1:45'], c:2},
+    {q:'What time does she go home?',       o:['4:50','5:50','10:05','5:10'], c:3},
+    {q:'What time does she go to bed?',     o:['8:00','9:30','8:30','9:15'], c:1}
+  ]},
+  e6:{pts:2, words:["o'clock",'half','quarter','past','to'], items:[
+    {d:'6:00',  pre:"It's six",   post:'.',             a:"o'clock"},
+    {d:'3:30',  pre:"It's",       post:'past three.',   a:'half'},
+    {d:'10:15', pre:"It's",       post:'past ten.',     a:'quarter'},
+    {d:'2:20',  pre:"It's twenty",post:'two.',          a:'past'},
+    {d:'7:50',  pre:"It's ten",   post:'eight.',        a:'to'}
+  ]}
+};
+const state = {e1:[],e2:[],e5:[],e4:[],checked:{},scores:{}};
+
+/* ---------- RENDER ---------- */
+function optsHTML(ex,i,o){
+  return o.map((t,k)=>`<div class="opt" data-ex="${ex}" data-i="${i}" data-k="${k}" onclick="pick(this)"><span class="box">☐</span><span>${L[k]}. ${t}</span></div>`).join('');
+}
+DATA.e1.items.forEach((it,i)=>{
+  document.getElementById('ex1-items').insertAdjacentHTML('beforeend',
+    `<div class="item" id="e1-${i}"><div class="q">${i+1}.</div><div class="clockbox">${clockSVG(it.h,it.m)}</div>${optsHTML('e1',i,it.o)}<div class="fb"></div></div>`);
+});
+DATA.e2.items.forEach((it,i)=>{
+  document.getElementById('ex2-items').insertAdjacentHTML('beforeend',
+    `<div class="item" id="e2-${i}"><div class="q">${i+1}.</div><div class="digital">${it.d}</div>${optsHTML('e2',i,it.o)}<div class="fb"></div></div>`);
+});
+DATA.e3.items.forEach((it,i)=>{
+  document.getElementById('ex3-items').insertAdjacentHTML('beforeend',
+    `<div class="item" id="e3-${i}"><div class="q">${i+1}.</div><div class="clockbox">${clockSVG(it.h,it.m)}</div><div class="write-row">It's <input type="text" id="e3-in-${i}" autocomplete="off" spellcheck="false"></div><div class="fb"></div></div>`);
+});
+DATA.e4.items.forEach((it,i)=>{
+  state.e4[i] = {h:12,m:0,touched:false};
+  document.getElementById('ex4-items').insertAdjacentHTML('beforeend',
+    `<div class="item" id="e4-${i}"><div class="q">${i+1}.</div><div class="target">It's ${it.t}.</div><div class="clockbox" id="e4-clock-${i}">${clockSVG(12,0)}</div>
+     <div class="setter">
+       <div class="grp"><button onclick="move(${i},'h',-1)">−</button> hour <button onclick="move(${i},'h',1)">+</button></div>
+       <div class="grp"><button onclick="move(${i},'m',-5)">−</button> minutes <button onclick="move(${i},'m',5)">+</button></div>
+     </div><div class="fb"></div></div>`);
+});
+DATA.e5.items.forEach((it,i)=>{
+  document.getElementById('ex5-items').insertAdjacentHTML('beforeend',
+    `<div class="item" id="e5-${i}"><div class="q">${i+1}. ${it.q}</div>${optsHTML('e5',i,it.o)}<div class="fb"></div></div>`);
+});
+DATA.e6.items.forEach((it,i)=>{
+  const sel = `<select id="e6-in-${i}"><option value="">......</option>${DATA.e6.words.map(w=>`<option>${w}</option>`).join('')}</select>`;
+  document.getElementById('ex6-items').insertAdjacentHTML('beforeend',
+    `<div class="gapline" id="e6-${i}"><b>${i+1}.</b> <span class="digital" style="font-size:1rem;width:auto;padding:2px 10px;margin:0">${it.d}</span> ${it.pre} <span style="white-space:nowrap">${sel}${it.post==='.'?'.':''}</span>${it.post==='.'?'':' '+it.post} <span class="fb"></span></div>`);
+});
+
+/* ---------- INTERACTION ---------- */
+function pick(el){
+  const ex = el.dataset.ex, i = +el.dataset.i, k = +el.dataset.k;
+  if(state.checked[ex]) return;
+  state[ex][i] = k;
+  el.parentElement.querySelectorAll('.opt').forEach(o=>{
+    const on = +o.dataset.k === k;
+    o.classList.toggle('sel', on);
+    o.querySelector('.box').textContent = on ? '☒' : '☐';
+  });
+}
+function move(i, part, d){
+  if(state.checked.e4) return;
+  const s = state.e4[i];
+  if(part==='h'){ s.h = ((s.h - 1 + d + 12) % 12) + 1; }
+  else { s.m += d; if(s.m>=60){s.m-=60; s.h = s.h%12+1;} if(s.m<0){s.m+=60; s.h = ((s.h+10)%12)+1;} }
+  s.touched = true;
+  document.getElementById('e4-clock-'+i).innerHTML = clockSVG(s.h, s.m);
+}
+function norm(s){
+  s = (s||'').toLowerCase().replace(/[’‘`´]/g,"'").replace(/-/g,' ').replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();
+  s = s.replace(/^(it's|it is|its)\s+/,'');
+  s = s.replace(/o\s*'?\s*clock/g,"o'clock");
+  s = s.replace(/\ba quarter\b/g,'quarter');
+  return s;
+}
+
+/* ---------- CHECK ---------- */
+function check(ex){
+  if(state.checked[ex]) return;
+  const D = DATA[ex], msg = document.getElementById(ex+'-msg');
+  // all answered?
+  let missing = false;
+  D.items.forEach((it,i)=>{
+    if(ex==='e3' && !document.getElementById('e3-in-'+i).value.trim()) missing = true;
+    if(ex==='e6' && !document.getElementById('e6-in-'+i).value) missing = true;
+    if(ex==='e4' && !state.e4[i].touched) missing = true;
+    if(['e1','e2','e5'].includes(ex) && state[ex][i]===undefined) missing = true;
+  });
+  if(missing){ msg.textContent = 'Please answer all the questions first.'; return; }
+  msg.textContent = '';
+
+  let score = 0;
+  D.items.forEach((it,i)=>{
+    const box = document.getElementById(ex+'-'+i), fb = box.querySelector('.fb');
+    let ok = false, correct = '';
+    if(['e1','e2','e5'].includes(ex)){
+      ok = state[ex][i] === it.c;
+      correct = `${L[it.c]}. ${it.o[it.c]}`;
+      box.classList.add('locked');
+      box.querySelectorAll('.opt')[it.c].classList.add('right');
+    } else if(ex==='e3'){
+      const inp = document.getElementById('e3-in-'+i);
+      ok = it.a.includes(norm(inp.value));
+      correct = `It's ${it.a[0]}.`;
+      inp.disabled = true;
+    } else if(ex==='e4'){
+      const s = state.e4[i];
+      ok = (s.h%12) === (it.h%12) && s.m === it.m;
+      correct = 'Look at the correct clock below.';
+      if(!ok) box.querySelector('.clockbox').insertAdjacentHTML('afterend',
+        `<div class="clockbox" style="opacity:.9">${clockSVG(it.h,it.m,110)}</div>`);
+      box.querySelectorAll('button').forEach(b=>b.disabled=true);
+    } else if(ex==='e6'){
+      const sel = document.getElementById('e6-in-'+i);
+      ok = sel.value === it.a;
+      correct = it.a;
+      sel.disabled = true;
+    }
+    if(ok) score += D.pts;
+    box.classList.add(ok?'ok':'ko');
+    fb.className = 'fb ' + (ok?'ok':'ko');
+    fb.textContent = ok ? `✓ Well done! (+${D.pts})` : `✗ Correct answer: ${correct}`;
+  });
+  state.checked[ex] = true;
+  state.scores[ex] = score;
+  const max = D.pts * D.items.length;
+  document.getElementById(ex+'-score').textContent = `Score: ${score}/${max}`;
+  document.querySelector(`#ex${ex[1]} .btn`).disabled = true;
+  saveAnswers(ex);
+  updateTotal();
+}
+
+/* ---------- TOTAL / SEND ---------- */
+const NAMES = {e1:'1. Look at the clocks',e2:'2. Digital clocks',e3:'3. Write the time',e4:'4. Set the clock',e5:"5. Sofia's day",e6:'6. Complete the sentences'};
+function updateTotal(){
+  let t = 0, rows = '';
+  Object.keys(NAMES).forEach(k=>{
+    const max = DATA[k].pts * DATA[k].items.length;
+    const v = state.scores[k];
+    if(v!==undefined) t += v;
+    rows += `<tr><td>${NAMES[k]}</td><td>${v===undefined?'·':v}/${max}</td></tr>`;
+  });
+  document.getElementById('total').textContent = t;
+  document.getElementById('summary').innerHTML = rows;
+  return t;
+}
+updateTotal();
+
+function submitAll(){
+  const m = document.getElementById('sendMsg');
+  const nome = document.getElementById('nome').value.trim();
+  const numero = document.getElementById('numero').value.trim();
+  const turma = document.getElementById('turma').value;
+  if(!nome || !numero || !turma){ m.textContent = 'Please write your name, number and class at the top.'; window.scrollTo({top:0,behavior:'smooth'}); return; }
+  const left = Object.keys(NAMES).filter(k=>!state.checked[k]);
+  if(left.length){ m.textContent = 'Please check all the exercises first (missing: ' + left.map(k=>k[1]).join(', ') + ').'; return; }
+  if(!APPS_SCRIPT_URL){ m.textContent = 'O URL do Apps Script ainda não foi configurado.'; return; }
+  const total = updateTotal();
+  const p = new URLSearchParams({
+    ficha:FICHA, nome, numero, turma,
+    ex1:state.scores.e1, ex2:state.scores.e2, ex3:state.scores.e3,
+    ex4:state.scores.e4, ex5:state.scores.e5, ex6:state.scores.e6,
+    total, data:new Date().toLocaleString('pt-PT')
+  });
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true; m.style.color = 'var(--night)'; m.textContent = 'Sending...';
+  fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:p.toString()})
+    .then(()=>{ saved.sent = true; store(); m.style.color='#2c7a62'; m.textContent = `Sent! Your score: ${total}/100. Thank you!`; })
+    .catch(()=>{ btn.disabled = false; m.style.color='var(--coral)'; m.textContent = 'Something went wrong. Please try again.'; });
+}
+
+/* ---------- MEMÓRIA NO NAVEGADOR ----------
+   Guarda os exercícios já verificados (e os dados do aluno) no localStorage.
+   Ao recarregar a página, os exercícios verificados voltam corrigidos e bloqueados. */
+const STORE_KEY = 'ficha_telling_the_time_6ano';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { saved = {}; }
+saved.ans = saved.ans || {};
+saved.id = saved.id || {};
+function store(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch(e) {} }
+
+function saveAnswers(ex){
+  let a;
+  if(['e1','e2','e5'].includes(ex)) a = state[ex].slice();
+  else if(ex==='e3') a = DATA.e3.items.map((_,i)=>document.getElementById('e3-in-'+i).value);
+  else if(ex==='e6') a = DATA.e6.items.map((_,i)=>document.getElementById('e6-in-'+i).value);
+  else if(ex==='e4') a = state.e4.map(s=>({h:s.h,m:s.m}));
+  saved.ans[ex] = a;
+  store();
+}
+
+// dados do aluno
+['nome','numero','turma'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(saved.id[id] !== undefined) el.value = saved.id[id];
+  el.addEventListener('input', ()=>{ saved.id[id] = el.value; store(); });
+  el.addEventListener('change', ()=>{ saved.id[id] = el.value; store(); });
+});
+
+// repor exercícios já verificados
+Object.keys(NAMES).forEach(ex=>{
+  const a = saved.ans[ex];
+  if(!a) return;
+  if(['e1','e2','e5'].includes(ex)){
+    a.forEach((k,i)=>{
+      const el = document.querySelector(`.opt[data-ex="${ex}"][data-i="${i}"][data-k="${k}"]`);
+      if(el) pick(el);
+    });
+  } else if(ex==='e3'){
+    a.forEach((v,i)=>{ document.getElementById('e3-in-'+i).value = v; });
+  } else if(ex==='e6'){
+    a.forEach((v,i)=>{ document.getElementById('e6-in-'+i).value = v; });
+  } else if(ex==='e4'){
+    a.forEach((p,i)=>{
+      state.e4[i] = {h:p.h, m:p.m, touched:true};
+      document.getElementById('e4-clock-'+i).innerHTML = clockSVG(p.h, p.m);
+    });
+  }
+  check(ex);
+});
+
+// ficha já enviada
+if(saved.sent){
+  document.getElementById('sendBtn').disabled = true;
+  const m = document.getElementById('sendMsg');
+  m.style.color = 'var(--night)';
+  m.textContent = 'This worksheet has already been sent.';
+}
+</script>
+</body>
+</html>
